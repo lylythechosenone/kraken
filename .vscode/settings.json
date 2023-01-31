@@ -1,0 +1,9 @@
+{
+    "rust-analyzer.check.targets": [
+        "aarch64-unknown-none-softfloat"
+    ],
+    "rust-analyzer.check.allTargets": false,
+    "conventionalCommits.scopes": [
+        "arm"
+    ]
+}

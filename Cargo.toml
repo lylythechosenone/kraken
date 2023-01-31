@@ -1,0 +1,19 @@
+[package]
+name = "kraken"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["linux"]
+linux = []          # The linux boot protocol
+
+[dependencies]
+bitflags = "1.3.2"
+cfg-if = "1.0.0"
+uart_16550 = "0.2.18"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
