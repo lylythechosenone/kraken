@@ -1,15 +1,14 @@
 SECTIONS
 {
-    .hdr ALIGN(4K):
-    {
-        KEEP(*(.hdr))
+    .hdr : {
+        *(.hdr)
     }
     .text :
     {
-        KEEP(*(.text*))
+        *(.text*)
     }
 
-    .tdata ALIGN(4K): {
+    .tdata : {
         *(.tdata .tdata.*)
     }
     .tbss : {
@@ -24,18 +23,18 @@ SECTIONS
         *(.dynamic)
     }
 
-    .rodata ALIGN(4K):
+    .rodata :
     {
-        KEEP(*(.rodata*))
+        *(.rodata*)
     }
 
-    .data ALIGN(4K):
+    .data :
     {
-        KEEP(*(.data*))
+        *(.data*)
     }
 
-    .bss ALIGN(4K):
+    .bss :
     {
-        KEEP(*(.bss*))
+        *(.bss*)
     }
 }

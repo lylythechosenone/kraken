@@ -9,11 +9,12 @@ build_aarch64:
 ifeq ($(PROTO), linux)
 ifeq ($(DEBUG), 1)
 	env RUSTFLAGS="-Clink-arg=-Tsrc/arch/init/aarch64_linux/linker.ld" cargo build --target src/arch/init/aarch64_linux/target.json --features linux -Z build-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem
-	cp target/aarch64-unknown-none-softfloat/debug/kraken ./kernel
+	cp target/target/debug/kraken ./kernel
 	objcopy -O binary kernel kernel.bin
 else
-	env RUSTFLAGS="-Clink-arg=-Tsrc/arch/init/aarch64_linux/linker.ld" cargo build --target aarch64-unknown-none-softfloat --features linux --release
-	cp target/aarch64-unknown-none-softfloat/release/kraken ./kernel
+	env RUSTFLAGS="-Clink-arg=-Tsrc/arch/init/aarch64_linux/linker.ld" cargo build --target src/arch/init/aarch64_linux/target.json --features linux -Z build-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem --release
+	cp target/target/release/kraken ./kernel
+	objcopy -O binary kernel kernel.bin
 endif
 else
 	$(error No/invalid protocol specified. Supported aarch64 protocols are: linux)
@@ -29,9 +30,9 @@ endif
 qemu_aarch64: build_aarch64
 ifeq ($(PROTO), linux)
 ifeq ($(DEBUG), 1)
-	qemu-system-aarch64 -M virt -cpu cortex-a76 -m 4096 -device VGA -kernel kernel.bin -serial mon:stdio -s -S
+	qemu-system-aarch64 -M virt -cpu cortex-a76 -m 4096 -device VGA -kernel kernel.bin -monitor stdio -d int -s -S
 else
-	qemu-system-aarch64 -M virt -cpu cortex-a76 -m 4096 -device VGA -kernel kernel -serial mon:stdio
+	qemu-system-aarch64 -M virt -cpu cortex-a76 -m 4096 -device VGA -kernel kernel -serial stdio
 endif
 else
 	$(error No/invalid protocol specified. Supported aarch64 protocols are: linux)

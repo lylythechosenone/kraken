@@ -6,13 +6,14 @@
     "configurations": [
         {
             "type": "lldb",
-            "request": "launch",
             "name": "Remote",
-            "program": "${workspaceFolder}/kernel",
-            "args": [
-                "gdb-remote localhost:9000"
+            "request": "custom",
+            "targetCreateCommands": [
+                "target create ${workspaceFolder}/kernel"
             ],
-            "cwd": "${workspaceFolder}"
+            "processCreateCommands": [
+                "gdb-remote localhost:1234"
+            ],
         }
     ]
 }

@@ -1,6 +1,12 @@
-use core::arch::global_asm;
+use core::{arch::global_asm, fmt::Write};
 
-use crate::common::elf64::dynamic::{relocate, Dyn};
+use crate::{
+    common::elf64::dynamic::{relocate, Dyn},
+    drivers::serial::{
+        pl011::{Config, Parity, Pl011},
+        Serial, SerialWriter,
+    },
+};
 
 global_asm!(include_str!("aarch64_linux/init.s"));
 
@@ -20,7 +26,20 @@ mod relocations {
 }
 
 #[no_mangle]
-pub extern "C" fn init(_device_tree: *const (), base_addr: u64, dynamic_table: *const Dyn) -> ! {
+pub unsafe extern "C" fn init(
+    _device_tree: *const (),
+    base_addr: u64,
+    dynamic_table: *const Dyn,
+) -> ! {
+    let mut serial = Pl011::new(0x9000000 as *mut _);
+    serial
+        .init(Config {
+            baud_rate: 115_200,
+            clock_rate: 24_000_000,
+            parity: Parity::None,
+        })
+        .unwrap();
+    writeln!(SerialWriter(serial), "Hello, world!").unwrap();
     relocate(base_addr as usize, dynamic_table, |rela| {
         match rela.r_type() {
             relocations::NULL => None,

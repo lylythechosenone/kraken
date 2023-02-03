@@ -1,4 +1,4 @@
-.pushsection .hdr
+.pushsection .hdr,"ax",@progbits
 bl init_asm
 nop
 .8byte 0
@@ -11,13 +11,14 @@ nop
 .4byte 0
 
 init_asm:
-    ldr x5, =0xDEADBEEF
     sub x1, x30, #4 /* get the base address */
     adr x3, stack
     mov sp, x3
-    /* adr x2, _DYNAMIC
-    b init */
+    adr x2, _DYNAMIC
+    b init
+.popsection
 
+.pushsection .bss
 stack:
-    .space 0x1000
+    .skip 0x1000
 .popsection
