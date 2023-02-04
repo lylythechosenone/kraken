@@ -57,7 +57,8 @@ pub unsafe extern "C" fn init(_device_tree: *const ()) -> ! {
         })
         .unwrap();
     // SAFETY: This function will never return, so for all intents and purposes, `logger` lives for `'static`.
-    let logger = unsafe { &*(&SerialLogger::new(serial) as *const SerialLogger<Pl011>) };
-    logger.set_logger().unwrap();
+    let logger = SerialLogger::new(serial);
+    let static_logger = unsafe { &*(&logger as *const SerialLogger<Pl011>) };
+    static_logger.set_logger().unwrap();
     todo!()
 }

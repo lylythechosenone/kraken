@@ -1,9 +1,6 @@
 pub mod pl011;
 
-use core::{
-    arch::asm,
-    fmt::{Debug, Write},
-};
+use core::fmt::{Debug, Write};
 
 use log::Log;
 use spin::{Mutex, MutexGuard};
@@ -74,7 +71,7 @@ impl<T: Serial + Send> SerialLogger<T> {
         }
     }
     pub fn set_logger(&'static self) -> Result<(), log::SetLoggerError> {
-        log::set_logger(self)
+        log::set_logger(self).map(|_| log::set_max_level(log::LevelFilter::max()))
     }
 }
 impl<T: Serial + Send> Log for SerialLogger<T> {
@@ -86,27 +83,27 @@ impl<T: Serial + Send> Log for SerialLogger<T> {
             log::Level::Error => {
                 let mut serial = self.serial.lock();
                 let mut writer = SerialWriter::new(&mut serial);
-                writeln!(writer, "[ERROR] {} {}", record.target(), record.args()).unwrap();
+                writeln!(writer, "[ERROR] ({}) {}", record.target(), record.args()).unwrap();
             }
             log::Level::Warn => {
                 let mut serial = self.serial.lock();
                 let mut writer = SerialWriter::new(&mut serial);
-                writeln!(writer, "[WARN] {} {}", record.target(), record.args()).unwrap();
+                writeln!(writer, "[WARN] ({}) {}", record.target(), record.args()).unwrap();
             }
             log::Level::Info => {
                 let mut serial = self.serial.lock();
                 let mut writer = SerialWriter::new(&mut serial);
-                writeln!(writer, "[INFO] {} {}", record.target(), record.args()).unwrap();
+                writeln!(writer, "[INFO] ({}) {}", record.target(), record.args()).unwrap();
             }
             log::Level::Debug => {
                 let mut serial = self.serial.lock();
                 let mut writer = SerialWriter::new(&mut serial);
-                writeln!(writer, "[DEBUG] {} {}", record.target(), record.args()).unwrap();
+                writeln!(writer, "[DEBUG] ({}) {}", record.target(), record.args()).unwrap();
             }
             log::Level::Trace => {
                 let mut serial = self.serial.lock();
                 let mut writer = SerialWriter::new(&mut serial);
-                writeln!(writer, "[TRACE] {} {}", record.target(), record.args()).unwrap();
+                writeln!(writer, "[TRACE] ({}) {}", record.target(), record.args()).unwrap();
             }
         }
     }
