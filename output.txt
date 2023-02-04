@@ -1,0 +1,820 @@
+   Compiling kraken v0.1.0 (/Users/lysan/kraken)
+   Compiling device_tree v1.1.0
+error[E0463]: can't find crate for `std`
+  |
+  = note: the `target` target may not support the standard library
+  = note: `std` is required by `device_tree` because it does not declare `#![no_std]`
+  = help: consider building the standard library from source with `cargo build -Zbuild-std`
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:326:12
+    |
+326 |         Ok(try!(raw.as_slice().read_be_u32(0)))
+    |            ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:324:19
+    |
+324 |         let raw = try!(self.prop_raw(name).ok_or(PropError::NotFound));
+    |                   ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:320:12
+    |
+320 |         Ok(try!(raw.as_slice().read_be_u64(0)))
+    |            ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:318:19
+    |
+318 |         let raw = try!(self.prop_raw(name).ok_or(PropError::NotFound));
+    |                   ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:305:12
+    |
+305 |         Ok(try!(str::from_utf8(&raw[..(l-1)])))
+    |            ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:298:19
+    |
+298 |         let raw = try!(self.prop_raw(name).ok_or(PropError::NotFound));
+    |                   ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:256:19
+    |
+256 |             name: try!(str::from_utf8(raw_name)).to_owned(),
+    |                   ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:249:12
+    |
+249 |         if try!(buffer.read_be_u32(pos)) != OF_DT_END_NODE {
+    |            ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:242:41
+    |
+242 |             let (new_pos, child_node) = try!(Node::load(buffer, pos,
+    |                                         ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:241:15
+    |
+241 |         while try!(buffer.read_be_u32(pos)) == OF_DT_BEGIN_NODE {
+    |               ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:231:17
+    |
+231 |                 try!(str::from_utf8(prop_name)).to_owned(),
+    |                 ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:226:29
+    |
+226 |             let prop_name = try!(
+    |                             ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:223:23
+    |
+223 |             let val = try!(buffer.subslice(val_start, val_end));
+    |                       ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:218:31
+    |
+218 |             let name_offset = try!(buffer.read_be_u32(pos+8)) as usize;
+    |                               ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:217:28
+    |
+217 |             let val_size = try!(buffer.read_be_u32(pos+4)) as usize;
+    |                            ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:216:15
+    |
+216 |         while try!(buffer.read_be_u32(pos)) == OF_DT_PROP {
+    |               ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:209:24
+    |
+209 |         let raw_name = try!(buffer.read_bstring0(start+4));
+    |                        ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:205:12
+    |
+205 |         if try!(buffer.read_be_u32(start)) != OF_DT_BEGIN_NODE {
+    |            ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:180:25
+    |
+180 |         let (_, root) = try!(Node::load(buffer, off_dt_struct, off_dt_strings));
+    |                         ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:170:24
+    |
+170 |             let size = try!(buffer.read_be_u64(pos));
+    |                        ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:168:26
+    |
+168 |             let offset = try!(buffer.read_be_u64(pos));
+    |                          ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:161:31
+    |
+161 |         let boot_cpuid_phys = try!(buffer.read_be_u32(28));
+    |                               ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:160:30
+    |
+160 |         let off_mem_rsvmap = try!(buffer.read_be_u32(16)) as usize;
+    |                              ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:159:30
+    |
+159 |         let off_dt_strings = try!(buffer.read_be_u32(12)) as usize;
+    |                              ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:158:29
+    |
+158 |         let off_dt_struct = try!(buffer.read_be_u32(8)) as usize;
+    |                             ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:153:23
+    |
+153 |         let version = try!(buffer.read_be_u32(20));
+    |                       ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:148:12
+    |
+148 |         if try!(buffer.read_be_u32(4)) as usize != buffer.len() {
+    |            ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find macro `try` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:143:12
+    |
+143 |         if try!(buffer.read_be_u32(0)) != MAGIC_NUMBER {
+    |            ^^^
+    |
+    = help: consider importing this macro:
+            core::try
+
+error: cannot find attribute `derive` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:102:3
+    |
+102 | #[derive(Debug)]
+    |   ^^^^^^
+    |
+    = help: consider importing this attribute macro:
+            core::prelude::rust_2024::derive
+
+error: cannot find attribute `derive` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:90:3
+   |
+90 | #[derive(Debug)]
+   |   ^^^^^^
+   |
+   = help: consider importing this attribute macro:
+           core::prelude::rust_2024::derive
+
+error: cannot find attribute `derive` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:73:3
+   |
+73 | #[derive(Debug)]
+   |   ^^^^^^
+   |
+   = help: consider importing this attribute macro:
+           core::prelude::rust_2024::derive
+
+error: cannot find attribute `derive` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:48:3
+   |
+48 | #[derive(Debug)]
+   |   ^^^^^^
+   |
+   = help: consider importing this attribute macro:
+           core::prelude::rust_2024::derive
+
+error: cannot find attribute `derive` in this scope
+ --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:8:3
+  |
+8 | #[derive(Debug)]
+  |   ^^^^^^
+  |
+  = help: consider importing this attribute macro:
+          core::prelude::rust_2024::derive
+
+error[E0412]: cannot find type `Result` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:13:31
+   |
+13 | pub type SliceReadResult<T> = Result<T, SliceReadError>;
+   |                               ^^^^^^ not found in this scope
+   |
+help: consider importing one of these items
+   |
+1  | use core::prelude::rust_2024::Result;
+   |
+1  | use util::fmt::Result;
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:26:20
+   |
+26 |             return Err(SliceReadError::UnexpectedEndOfInput)
+   |                    ^^^ not found in this scope
+   |
+help: consider importing this tuple variant
+   |
+1  | use core::prelude::rust_2024::Err;
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:29:9
+   |
+29 |         Ok(
+   |         ^^ not found in this scope
+   |
+help: consider importing this tuple variant
+   |
+1  | use core::prelude::rust_2024::Ok;
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:40:20
+   |
+40 |             return Err(SliceReadError::UnexpectedEndOfInput)
+   |                    ^^^ not found in this scope
+   |
+help: consider importing this tuple variant
+   |
+1  | use core::prelude::rust_2024::Err;
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:43:9
+   |
+43 |         Ok(
+   |         ^^ not found in this scope
+   |
+help: consider importing this tuple variant
+   |
+1  | use core::prelude::rust_2024::Ok;
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:59:24
+   |
+59 |                 return Ok(&self[pos..cur])
+   |                        ^^ not found in this scope
+   |
+help: consider importing this tuple variant
+   |
+1  | use core::prelude::rust_2024::Ok;
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:65:9
+   |
+65 |         Err(SliceReadError::UnexpectedEndOfInput)
+   |         ^^^ not found in this scope
+   |
+help: consider importing this tuple variant
+   |
+1  | use core::prelude::rust_2024::Err;
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:70:20
+   |
+70 |             return Err(SliceReadError::UnexpectedEndOfInput)
+   |                    ^^^ not found in this scope
+   |
+help: consider importing this tuple variant
+   |
+1  | use core::prelude::rust_2024::Err;
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/util.rs:73:9
+   |
+73 |         Ok(&self[start..end])
+   |         ^^ not found in this scope
+   |
+help: consider importing this tuple variant
+   |
+1  | use core::prelude::rust_2024::Ok;
+   |
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:83:19
+   |
+83 |     pub reserved: Vec<(u64, u64)>,
+   |                   ^^^ not found in this scope
+
+error[E0412]: cannot find type `String` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:93:15
+   |
+93 |     pub name: String,
+   |               ^^^^^^ not found in this scope
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:96:16
+   |
+96 |     pub props: Vec<(String, Vec<u8>)>,
+   |                ^^^ not found in this scope
+
+error[E0412]: cannot find type `String` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:96:21
+   |
+96 |     pub props: Vec<(String, Vec<u8>)>,
+   |                     ^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+91 | pub struct Node<String> {
+   |                ++++++++
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:96:29
+   |
+96 |     pub props: Vec<(String, Vec<u8>)>,
+   |                             ^^^ not found in this scope
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:99:19
+   |
+99 |     pub children: Vec<Node>,
+   |                   ^^^ not found in this scope
+
+error[E0405]: cannot find trait `From` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:110:6
+    |
+110 | impl From<SliceReadError> for DeviceTreeError {
+    |      ^^^^ not found in this scope
+    |
+help: consider importing this trait
+    |
+37  | use core::prelude::rust_2024::From;
+    |
+
+error[E0405]: cannot find trait `From` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:116:6
+    |
+116 | impl From<str::Utf8Error> for DeviceTreeError {
+    |      ^^^^ not found in this scope
+    |
+help: consider importing this trait
+    |
+37  | use core::prelude::rust_2024::From;
+    |
+
+error[E0412]: cannot find type `Result` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:124:35
+    |
+124 |     pub fn load(buffer: &[u8]) -> Result<DeviceTree, DeviceTreeError> {
+    |                                   ^^^^^^ not found in this scope
+    |
+help: consider importing one of these items
+    |
+37  | use core::prelude::rust_2024::Result;
+    |
+37  | use util::fmt::Result;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:144:20
+    |
+144 |             return Err(DeviceTreeError::InvalidMagicNumber)
+    |                    ^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Err;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:149:20
+    |
+149 |             return Err(DeviceTreeError::SizeMismatch);
+    |                    ^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Err;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:155:20
+    |
+155 |             return Err(DeviceTreeError::VersionNotSupported);
+    |                    ^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Err;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:182:9
+    |
+182 |         Ok(DeviceTree{
+    |         ^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Ok;
+    |
+
+error[E0412]: cannot find type `Option` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:190:46
+    |
+190 |     pub fn find<'a>(&'a self, path: &str) -> Option<&'a Node> {
+    |                                              ^^^^^^ not found in this scope
+    |
+help: consider importing this enum
+    |
+37  | use core::prelude::rust_2024::Option;
+    |
+
+error[E0425]: cannot find value `None` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:193:20
+    |
+193 |             return None
+    |                    ^^^^ not found in this scope
+    |
+help: consider importing this unit variant
+    |
+37  | use core::prelude::rust_2024::None;
+    |
+
+error[E0412]: cannot find type `Result` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:203:8
+    |
+203 |     -> Result<(usize, Node), DeviceTreeError> {
+    |        ^^^^^^ not found in this scope
+    |
+help: consider importing one of these items
+    |
+37  | use core::prelude::rust_2024::Result;
+    |
+37  | use util::fmt::Result;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:206:20
+    |
+206 |             return Err(DeviceTreeError::ParseError(start))
+    |                    ^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Err;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:250:20
+    |
+250 |             return Err(DeviceTreeError::ParseError(pos))
+    |                    ^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Err;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:255:9
+    |
+255 |         Ok((pos, Node{
+    |         ^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Ok;
+    |
+
+error[E0412]: cannot find type `Option` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:262:46
+    |
+262 |     pub fn find<'a>(&'a self, path: &str) -> Option<&'a Node> {
+    |                                              ^^^^^^ not found in this scope
+    |
+help: consider importing this enum
+    |
+37  | use core::prelude::rust_2024::Option;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:264:20
+    |
+264 |             return Some(self)
+    |                    ^^^^
+    |
+help: try calling `Some` as a method
+    |
+264 |             return self.Some()
+    |                    ~~~~~~~~~~~
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Some;
+    |
+
+error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:268:13
+    |
+268 |             Some(idx) => {
+    |             ^^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Some;
+    |
+
+error[E0425]: cannot find value `None` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:283:17
+    |
+283 |                 None
+    |                 ^^^^ not found in this scope
+    |
+help: consider importing this unit variant
+    |
+37  | use core::prelude::rust_2024::None;
+    |
+
+error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:290:16
+    |
+290 |         if let Some(_) = self.prop_raw(name) {
+    |                ^^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Some;
+    |
+
+error[E0412]: cannot find type `Result` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:297:50
+    |
+297 |     pub fn prop_str<'a>(&'a self, name: &str) -> Result<&'a str, PropError> {
+    |                                                  ^^^^^^ not found in this scope
+    |
+help: consider importing one of these items
+    |
+37  | use core::prelude::rust_2024::Result;
+    |
+37  | use util::fmt::Result;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Err` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:302:20
+    |
+302 |             return Err(PropError::Missing0)
+    |                    ^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Err;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:305:9
+    |
+305 |         Ok(try!(str::from_utf8(&raw[..(l-1)])))
+    |         ^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Ok;
+    |
+
+error[E0412]: cannot find type `Option` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:308:50
+    |
+308 |     pub fn prop_raw<'a>(&'a self, name: &str) -> Option<&'a Vec<u8>> {
+    |                                                  ^^^^^^ not found in this scope
+    |
+help: consider importing this enum
+    |
+37  | use core::prelude::rust_2024::Option;
+    |
+
+error[E0412]: cannot find type `Vec` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:308:61
+    |
+308 |     pub fn prop_raw<'a>(&'a self, name: &str) -> Option<&'a Vec<u8>> {
+    |                                                             ^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:311:24
+    |
+311 |                 return Some(val)
+    |                        ^^^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Some;
+    |
+
+error[E0425]: cannot find value `None` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:314:9
+    |
+314 |         None
+    |         ^^^^ not found in this scope
+    |
+help: consider importing this unit variant
+    |
+37  | use core::prelude::rust_2024::None;
+    |
+
+error[E0412]: cannot find type `Result` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:317:43
+    |
+317 |     pub fn prop_u64(&self, name: &str) -> Result<u64, PropError> {
+    |                                           ^^^^^^ not found in this scope
+    |
+help: consider importing one of these items
+    |
+37  | use core::prelude::rust_2024::Result;
+    |
+37  | use util::fmt::Result;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:320:9
+    |
+320 |         Ok(try!(raw.as_slice().read_be_u64(0)))
+    |         ^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Ok;
+    |
+
+error[E0412]: cannot find type `Result` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:323:43
+    |
+323 |     pub fn prop_u32(&self, name: &str) -> Result<u32, PropError> {
+    |                                           ^^^^^^ not found in this scope
+    |
+help: consider importing one of these items
+    |
+37  | use core::prelude::rust_2024::Result;
+    |
+37  | use util::fmt::Result;
+    |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:326:9
+    |
+326 |         Ok(try!(raw.as_slice().read_be_u32(0)))
+    |         ^^ not found in this scope
+    |
+help: consider importing this tuple variant
+    |
+37  | use core::prelude::rust_2024::Ok;
+    |
+
+error[E0405]: cannot find trait `From` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:330:6
+    |
+330 | impl From<str::Utf8Error> for PropError {
+    |      ^^^^ not found in this scope
+    |
+help: consider importing this trait
+    |
+37  | use core::prelude::rust_2024::From;
+    |
+
+error[E0405]: cannot find trait `From` in this scope
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:336:6
+    |
+336 | impl From<SliceReadError> for PropError {
+    |      ^^^^ not found in this scope
+    |
+help: consider importing this trait
+    |
+37  | use core::prelude::rust_2024::From;
+    |
+
+error[E0433]: failed to resolve: use of undeclared type `Vec`
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:164:28
+    |
+164 |         let mut reserved = Vec::new();
+    |                            ^^^ use of undeclared type `Vec`
+
+error[E0433]: failed to resolve: use of undeclared type `Vec`
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:214:25
+    |
+214 |         let mut props = Vec::new();
+    |                         ^^^ use of undeclared type `Vec`
+
+error[E0433]: failed to resolve: use of undeclared type `Vec`
+   --> /Users/lysan/.cargo/registry/src/github.com-1ecc6299db9ec823/device_tree-1.1.0/src/lib.rs:239:28
+    |
+239 |         let mut children = Vec::new();
+    |                            ^^^ use of undeclared type `Vec`
+
+Some errors have detailed explanations: E0405, E0412, E0425, E0433, E0463, E0531.
+For more information about an error, try `rustc --explain E0405`.
+error: could not compile `device_tree` due to 83 previous errors
+make[1]: *** [build_aarch64] Error 101
+make: *** [qemu] Error 2
