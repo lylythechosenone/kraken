@@ -2,8 +2,6 @@
 #![no_main]
 #![feature(panic_info_message)]
 
-use core::arch::asm;
-
 use log::{error, info};
 
 mod arch;
