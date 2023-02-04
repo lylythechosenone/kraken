@@ -41,6 +41,7 @@ name = "kraken"
 version = "0.1.0"
 dependencies = [
  "bitflags",
+ "cfg-if",
  "log",
  "spin",
  "uart_16550",

@@ -15,7 +15,7 @@ mod macros;
 fn panic(info: &core::panic::PanicInfo) -> ! {
     match (info.message(), info.location()) {
         (Some(message), Some(location)) => {
-            error!(
+            error!(target: "panic",
                 "Panic at {}:{}: {}",
                 location.file(),
                 location.line(),
@@ -23,27 +23,24 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
             );
         }
         (Some(message), None) => {
-            error!("Panic: {}", message);
+            error!(target: "panic", "Panic: {}", message);
         }
         (None, Some(location)) => {
             error!(
+                target: "panic",
                 "Panic at {}:{}: no message provided",
                 location.file(),
                 location.line()
             );
         }
         (None, None) => {
-            error!("Panic: no message provided");
+            error!(target: "panic", "Panic: no message provided");
         }
     }
 
     #[inline(always)]
     fn kalm() -> ! {
-        loop {
-            unsafe {
-                asm!("wfe");
-            }
-        }
+        arch::util::wait_forever();
     }
     kalm()
 }
