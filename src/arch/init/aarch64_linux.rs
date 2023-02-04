@@ -60,5 +60,5 @@ pub unsafe extern "C" fn init(_device_tree: *const ()) -> ! {
     let logger = SerialLogger::new(serial);
     let static_logger = unsafe { &*(&logger as *const SerialLogger<Pl011>) };
     static_logger.set_logger().unwrap();
-    todo!()
+    crate::main();
 }

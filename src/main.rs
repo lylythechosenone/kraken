@@ -4,7 +4,7 @@
 
 use core::arch::asm;
 
-use log::error;
+use log::{error, info};
 
 mod arch;
 mod common;
@@ -46,4 +46,9 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
         }
     }
     kalm()
+}
+
+pub fn main() -> ! {
+    info!("Main called!");
+    panic!("Got to the end of main");
 }
