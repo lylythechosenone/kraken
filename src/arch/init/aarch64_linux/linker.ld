@@ -1,7 +1,9 @@
+ENTRY(init_asm)
+
 SECTIONS
 {
     .hdr : {
-        *(.hdr)
+        KEEP(*(.hdr))
     }
     .text :
     {
@@ -35,6 +37,13 @@ SECTIONS
 
     .bss :
     {
+        bss_start = .;
         *(.bss*)
+        stack_bottom = .;
+        . += 0x1000;
+        . = ALIGN(16);
+        stack = .;
+        . += 16;
+        bss_end = .;
     }
 }

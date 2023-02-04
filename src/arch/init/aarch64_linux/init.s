@@ -11,14 +11,24 @@ nop
 .4byte 0
 
 init_asm:
-    sub x1, x30, #4 /* get the base address */
     adr x3, stack
-    mov sp, x3
-    adr x2, _DYNAMIC
-    b init
-.popsection
+    mov sp, x30
+    str x0, [sp, #-8]
 
-.pushsection .bss
-stack:
-    .skip 0x1000
+    mov x0, #0
+    adr x1, bss_start
+    adr x2, bss_end
+.loop:
+    str x0, [x1]
+    add x1, x1, #8
+    cmp x1, x2
+    b.lt .loop
+
+    sub x0, x30, #4 /* get the base address */
+    adr x1, _DYNAMIC
+    bl relocate
+
+    ldr x0, [sp, #-8]
+    sub sp, sp, #0x8
+    b init
 .popsection

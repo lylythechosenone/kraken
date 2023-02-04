@@ -47,6 +47,7 @@ impl Debug for Error {
     }
 }
 
+#[allow(unused)]
 pub enum Parity {
     None,
     Odd,
@@ -62,6 +63,7 @@ pub struct Config {
 pub struct Pl011 {
     pointer: *mut u8,
 }
+unsafe impl Send for Pl011 {}
 impl MmioDevice for Pl011 {
     fn pointer(&self) -> *mut u8 {
         self.pointer

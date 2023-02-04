@@ -9,7 +9,8 @@
             "name": "Remote",
             "request": "custom",
             "targetCreateCommands": [
-                "target create ${workspaceFolder}/kernel"
+                "target create --no-dependents --arch arm64 ${workspaceFolder}/kernel",
+                "target modules load --file ${workspaceFolder}/kernel --slide 0x40080000"
             ],
             "processCreateCommands": [
                 "gdb-remote localhost:1234"

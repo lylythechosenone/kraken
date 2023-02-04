@@ -3,6 +3,7 @@ use crate::size_of;
 ///! Dynamic linking information. See https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-42444.html for more info.
 
 /// A dynamic entry, found in the `.dynamic` section, under the `_DYNAMIC` label.
+#[repr(C)]
 pub struct Dyn {
     tag: u64,
     val: u64,
@@ -14,6 +15,7 @@ const DYN_RELA_SIZE: u64 = 0x08;
 const DYN_ENTRY_SIZE: u64 = 0x09;
 
 /// Relocation via addend.
+#[repr(C)]
 pub struct Rela {
     /// The relocation's offset from the start of the executable
     pub offset: u64,
@@ -24,7 +26,7 @@ pub struct Rela {
 }
 impl Rela {
     pub fn r_type(&self) -> u64 {
-        self.info & 0xff
+        self.info & 0xffffffff
     }
 }
 
