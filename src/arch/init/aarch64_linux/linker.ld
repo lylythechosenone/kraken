@@ -43,7 +43,6 @@ SECTIONS
         . += 0x1000;
         . = ALIGN(16);
         stack = .;
-        . += 16;
         bss_end = .;
     }
 }

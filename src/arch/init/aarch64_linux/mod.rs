@@ -1,4 +1,7 @@
-use core::arch::global_asm;
+use core::{arch::global_asm, cell::OnceCell};
+
+use fdt::Fdt;
+use log::info;
 
 use crate::{
     common::elf64::dynamic::{self, Dyn},
@@ -46,19 +49,37 @@ pub unsafe extern "C" fn relocate(base_addr: u64, dynamic_table: *const Dyn) -> 
     }).is_ok()
 }
 
+static mut PL011: OnceCell<SerialLogger<Pl011>> = OnceCell::new();
+
 #[no_mangle]
-pub unsafe extern "C" fn init(_device_tree: *const ()) -> ! {
-    let mut serial = Pl011::new(0x9000000 as *mut _);
-    serial
-        .init(Config {
-            baud_rate: 115_200,
-            clock_rate: 24_000_000,
-            parity: Parity::None,
-        })
-        .unwrap();
-    // SAFETY: This function will never return, so for all intents and purposes, `logger` lives for `'static`.
-    let logger = SerialLogger::new(serial);
-    let static_logger = unsafe { &*(&logger as *const SerialLogger<Pl011>) };
-    static_logger.set_logger().unwrap();
+pub unsafe extern "C" fn init(device_tree: *const u8) -> ! {
+    let device_tree = Fdt::from_ptr(device_tree).unwrap();
+
+    if let Some(stdout) = device_tree.chosen().stdout() {
+        let ty = stdout.name.split('@').next().unwrap();
+        match ty {
+            "pl011" => {
+                let mut serial = Pl011::new(
+                    u64::from_str_radix(stdout.name.split('@').nth(1).unwrap(), 16).unwrap()
+                        as *mut _,
+                );
+                serial
+                    .init(Config {
+                        baud_rate: 115_200,
+                        clock_rate: 24_000_000,
+                        parity: Parity::None,
+                    })
+                    .unwrap();
+                // SAFETY: This function will never return, so for all intents and purposes, `logger` lives for `'static`.
+                PL011
+                    .get_or_init(|| SerialLogger::new(serial))
+                    .set_logger()
+                    .unwrap();
+                info!("Pl011 Initialized");
+            }
+            _ => unimplemented!("stdout type: {}", ty),
+        }
+    }
+
     crate::main();
 }

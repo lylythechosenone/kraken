@@ -1,6 +1,6 @@
 #![no_std]
 #![no_main]
-#![feature(panic_info_message)]
+#![feature(panic_info_message, once_cell)]
 
 use log::{error, info};
 

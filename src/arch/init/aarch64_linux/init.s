@@ -12,8 +12,8 @@ nop
 
 init_asm:
     adr x3, stack
-    mov sp, x30
-    str x0, [sp, #-8]
+    mov sp, x3
+    mov x19, x0
 
     mov x0, #0
     adr x1, bss_start
@@ -28,7 +28,6 @@ init_asm:
     adr x1, _DYNAMIC
     bl relocate
 
-    ldr x0, [sp, #-8]
-    sub sp, sp, #0x8
+    mov x0, x19
     b init
 .popsection
