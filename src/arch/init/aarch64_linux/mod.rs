@@ -8,7 +8,7 @@ use crate::{
     },
 };
 
-global_asm!(include_str!("aarch64_linux/init.s"));
+global_asm!(include_str!("init.s"));
 
 mod relocations {
     pub const NULL: u64 = 0;
