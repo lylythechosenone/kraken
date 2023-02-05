@@ -1,4 +1,4 @@
 /target
-kernel.bin
-kernel
+/kernel.bin
+/kernel
 *.dtb
