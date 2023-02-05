@@ -30,9 +30,9 @@ endif
 qemu_aarch64: build_aarch64
 ifeq ($(PROTO), linux)
 ifeq ($(DEBUG), 1)
-	qemu-system-aarch64 -M virt -cpu cortex-a76 -m 4096 -device VGA -kernel kernel.bin -monitor stdio -d int -s -S
+	qemu-system-aarch64 -M virt -cpu cortex-a76 -m 4096 -vga none -device ramfb -kernel kernel.bin -monitor stdio -d int -s -S
 else
-	qemu-system-aarch64 -M virt -cpu cortex-a76 -m 4096 -device VGA -kernel kernel.bin -serial stdio
+	qemu-system-aarch64 -M virt -cpu cortex-a76 -m 4096 -vga none -device ramfb -kernel kernel.bin -serial stdio
 endif
 else
 	$(error No/invalid protocol specified. Supported aarch64 protocols are: linux)
