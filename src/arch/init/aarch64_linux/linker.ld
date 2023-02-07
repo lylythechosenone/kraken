@@ -2,6 +2,8 @@ ENTRY(init_asm)
 
 SECTIONS
 {
+    kernel_start = .;
+
     .hdr : {
         KEEP(*(.hdr))
     }
@@ -45,4 +47,6 @@ SECTIONS
         stack = .;
         bss_end = .;
     }
+
+    kernel_end = .;
 }

@@ -7,6 +7,7 @@ use log::{error, info};
 mod arch;
 mod common;
 mod drivers;
+mod kernel;
 mod macros;
 
 #[panic_handler]
