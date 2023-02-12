@@ -5,7 +5,6 @@ use crate::common::sync::SingleCoreLock;
 pub static BITMAP: SingleCoreLock<Option<Bitmap>> = SingleCoreLock::new(None);
 
 pub struct Bitmap {
-    pub size: usize,
     pub data: &'static mut [u64],
 }
 impl Bitmap {
@@ -15,7 +14,6 @@ impl Bitmap {
     /// The pointer must be valid.
     pub unsafe fn from_ptr(ptr: *mut (), size: usize) -> Self {
         Self {
-            size,
             data: unsafe { core::slice::from_raw_parts_mut(ptr as *mut u64, size) },
         }
     }
@@ -67,5 +65,16 @@ impl Bitmap {
             }
             self.data[end_big] &= !((1 << end_small) - 1);
         }
+    }
+
+    pub fn alloc(&mut self) -> Option<usize> {
+        for (i, &x) in self.data.iter().enumerate() {
+            if x != !0 {
+                let bit = x.trailing_zeros();
+                self.data[i] |= 1 << bit;
+                return Some(i * 64 + bit as usize);
+            }
+        }
+        None
     }
 }
