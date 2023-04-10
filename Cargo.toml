@@ -12,6 +12,10 @@ cfg-if = "1.0.0"
 fdt = "0.1.4"
 log = { version = "0.4.17" }
 spin = "0.9.4"
+mem = { path = "libs/mem", default-features = false }
+system = { path = "libs/system", default-features = false }
+smallvec = { version = "1.10.0", features = ["const_generics"] }
+bitflags = "2.1.0"
 
 [profile.dev]
 panic = "abort"

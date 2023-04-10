@@ -1,7 +1,7 @@
-use core::{arch::global_asm, cell::OnceCell};
+use core::{arch::global_asm, cell::OnceCell, ptr::NonNull};
 
 use fdt::{standard_nodes::MemoryRegion, Fdt};
-use log::trace;
+use log::{info, trace};
 
 use crate::{
     common::elf64::dynamic::{self, Dyn},
@@ -9,7 +9,10 @@ use crate::{
         pl011::{Config, Parity, Pl011},
         Serial, SerialLogger,
     },
-    kernel::memory::Bitmap,
+    kernel::memory::{
+        physalloc::{Node, PhysAlloc},
+        Bitmap,
+    },
     label,
 };
 
@@ -53,57 +56,19 @@ pub unsafe extern "C" fn relocate(base_addr: u64, dynamic_table: *const Dyn) -> 
 
 static mut PL011: OnceCell<SerialLogger<Pl011>> = OnceCell::new();
 
-fn split_larger(region: MemoryRegion, start: u64, end: u64) -> MemoryRegion {
-    trace!(
-        "Splitting with region {:p} - {:p}",
-        start as *const (),
-        end as *const ()
-    );
-    let region_start = region.starting_address as u64;
-    let region_end = region.starting_address.wrapping_add(region.size.unwrap()) as u64;
-    if start >= region_start && end <= region_end {
-        let left_region = MemoryRegion {
-            starting_address: region_start as *const _,
-            size: Some((end - region_start) as usize),
-        };
-        let right_region = MemoryRegion {
-            starting_address: end as *const _,
-            size: Some((region_end - end) as usize),
-        };
-        if left_region.size.unwrap() > right_region.size.unwrap() {
-            left_region
-        } else {
-            right_region
-        }
-    } else if start >= region_start && start <= region_end {
-        MemoryRegion {
-            starting_address: region_start as *const _,
-            size: Some((start - region_start) as usize),
-        }
-    } else if end >= region_start && end <= region_end {
-        MemoryRegion {
-            starting_address: end as *const _,
-            size: Some((region_end - end) as usize),
-        }
-    } else {
-        region
-    }
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn init(dtb_ptr: *const u8) -> ! {
     let device_tree = Fdt::from_ptr(dtb_ptr).unwrap();
 
-    trace!("Device tree: {:?}", device_tree);
-
     if let Some(stdout) = device_tree.chosen().stdout() {
-        let ty = stdout.name.split('@').next().unwrap();
+        let Some(ty) = stdout.compatible() else {
+            panic!("stdout is not compatible with any type");
+        };
+        let ty = ty.first();
         match ty {
-            "pl011" => {
-                let mut serial = Pl011::new(
-                    u64::from_str_radix(stdout.name.split('@').nth(1).unwrap(), 16).unwrap()
-                        as *mut _,
-                );
+            "arm,pl011" => {
+                let mut serial =
+                    Pl011::new(stdout.reg().unwrap().next().unwrap().starting_address as *mut _);
                 serial
                     .init(Config {
                         baud_rate: 115_200,
@@ -111,7 +76,6 @@ pub unsafe extern "C" fn init(dtb_ptr: *const u8) -> ! {
                         parity: Parity::None,
                     })
                     .unwrap();
-                // SAFETY: This function will never return, so for all intents and purposes, `logger` lives for `'static`.
                 PL011
                     .get_or_init(|| SerialLogger::new(serial))
                     .set_logger()
@@ -122,80 +86,32 @@ pub unsafe extern "C" fn init(dtb_ptr: *const u8) -> ! {
         }
     }
 
-    let last_region = device_tree
-        .memory()
-        .regions()
-        .last()
-        .expect("There's no memory!");
-    let last_region_end = last_region
-        .starting_address
-        .wrapping_add(last_region.size.unwrap());
-    let first_region = device_tree
-        .memory()
-        .regions()
-        .next()
-        .expect("There's no memory!");
-    let first_region_start = first_region.starting_address;
-    let ram_size = last_region_end.wrapping_sub(first_region_start as usize) as usize;
-    let bitmap_size = (ram_size / 4096) / 8;
-
-    let mut bitmap_start = None;
-
-    let kernel_start = label!(kernel_start) as u64;
-    let kernel_end = label!(kernel_end) as u64;
-    let dtb_end = dtb_ptr.wrapping_add(device_tree.total_size()) as u64;
-
-    for mut region in device_tree.memory().regions() {
-        trace!(
-            "Memory region: {:p} - {:p}",
-            region.starting_address,
-            region.starting_address.wrapping_add(region.size.unwrap())
-        );
-
-        region = split_larger(region, kernel_start, kernel_end);
-        region = split_larger(region, dtb_ptr as u64, dtb_end);
-
-        for reservation in device_tree.memory_reservations() {
-            region = split_larger(
-                region,
-                reservation.address() as u64,
-                reservation.address().wrapping_add(reservation.size()) as u64,
-            )
-        }
-
-        if region.size.unwrap() >= bitmap_size {
-            bitmap_start = Some(region.starting_address);
-        }
-    }
-
-    if bitmap_start.is_none() {
-        panic!("No memory region large enough to hold the bitmap!");
-    }
-
-    trace!("Bitmap at {:p}", bitmap_start.unwrap());
-
-    core::ptr::write_bytes(bitmap_start.unwrap() as *mut u8, 0xFF, bitmap_size);
-    let mut bitmap = Bitmap::from_ptr(bitmap_start.unwrap() as *mut _, bitmap_size);
-
     for region in device_tree.memory().regions() {
-        let start = region.starting_address as u64 / 4096;
-        let end = region.starting_address.wrapping_add(region.size.unwrap()) as u64 / 4096;
-        bitmap.clear_range(start as usize, end as usize);
+        let start = (region.starting_address as usize + 4095) / 4096 * 4096;
+        let end = (region.starting_address as usize + region.size.unwrap()) / 4096 * 4096;
+
+        for addr in (start..end).step_by(4096) {
+            let node = Node {
+                next: NonNull::new((addr + 4096) as *mut Node),
+            };
+            core::ptr::write(addr as *mut Node, node);
+        }
+        let last_node = Node { next: None };
+        core::ptr::write((end - 4096) as *mut Node, last_node);
     }
 
-    bitmap.set_range(
-        kernel_start as usize / 4096,
-        (kernel_end + 4095) as usize / 4096,
-    );
-    bitmap.set_range(dtb_ptr as usize / 4096, (dtb_end + 4095) as usize / 4096);
+    let head = || {
+        NonNull::new(
+            ((device_tree.memory().regions().next()?.starting_address as usize + 4095) / 4096
+                * 4096) as *mut Node,
+        )
+    };
+    let physalloc = PhysAlloc {
+        free: head(),
+        dirty: None,
+    };
 
-    for reservation in device_tree.memory_reservations() {
-        let start = reservation.address() as u64 / 4096;
-        let end = (reservation.address().wrapping_add(reservation.size()) as u64 + 4095) / 4096;
-        bitmap.set_range(start as usize, end as usize);
-    }
-
-    crate::kernel::memory::BITMAP.set(Some(bitmap));
+    trace!("Initialized physical allocator: {physalloc:?}");
 
     crate::main();
 }

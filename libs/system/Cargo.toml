@@ -1,0 +1,13 @@
+[package]
+name = "system"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["userspace"]
+userspace = []
+
+[dependencies]
+pin-list = "0.1.0"
+pin-project = "1.0.12"
+spin = "0.9.5"

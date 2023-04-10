@@ -1,2 +1,2 @@
 pub mod elf64;
-pub mod sync;
+pub mod sizes;

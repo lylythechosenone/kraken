@@ -1,8 +1,30 @@
+use core::alloc::GlobalAlloc;
+
 use log::trace;
+use mem::vmem::Vmem;
+use spin::{Mutex, Once};
 
-use crate::common::sync::SingleCoreLock;
+use self::address::PhysAddr;
 
-pub static BITMAP: SingleCoreLock<Option<Bitmap>> = SingleCoreLock::new(None);
+pub mod address;
+pub mod physalloc;
+
+pub static BITMAP: Mutex<Option<Bitmap>> = Mutex::new(None);
+pub static HHDM_START: Once<usize> = Once::new();
+
+#[global_allocator]
+pub static DUMMY_ALLOC: DummyAlloc = DummyAlloc;
+
+pub struct DummyAlloc;
+unsafe impl GlobalAlloc for DummyAlloc {
+    unsafe fn alloc(&self, layout: core::alloc::Layout) -> *mut u8 {
+        unimplemented!()
+    }
+
+    unsafe fn dealloc(&self, ptr: *mut u8, layout: core::alloc::Layout) {
+        unimplemented!()
+    }
+}
 
 pub struct Bitmap {
     pub data: &'static mut [u64],
@@ -67,14 +89,19 @@ impl Bitmap {
         }
     }
 
-    pub fn alloc(&mut self) -> Option<usize> {
+    pub fn alloc(&mut self) -> Option<PhysAddr> {
         for (i, &x) in self.data.iter().enumerate() {
             if x != !0 {
                 let bit = x.trailing_zeros();
                 self.data[i] |= 1 << bit;
-                return Some(i * 64 + bit as usize);
+                return Some(PhysAddr::new((i * 64 + bit as usize) * 4096));
             }
         }
         None
     }
+}
+
+pub struct Kmem {
+    pub bitmap: &'static mut Bitmap,
+    pub vmem: &'static mut Vmem<'static>,
 }

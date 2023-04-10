@@ -1,8 +1,13 @@
 #![no_std]
 #![no_main]
 #![feature(panic_info_message, once_cell)]
+#![allow(unused)]
+
+use core::alloc::Layout;
 
 use log::{error, info};
+
+extern crate alloc;
 
 mod arch;
 mod common;
@@ -47,4 +52,18 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
 pub fn main() -> ! {
     info!("Main called!");
     panic!("Got to the end of main");
+}
+
+pub fn num_cpus() -> usize {
+    todo!()
+}
+pub fn cpu_id() -> usize {
+    todo!()
+}
+
+pub fn alloc(layout: Layout) -> Option<*mut u8> {
+    todo!()
+}
+pub fn free(ptr: *mut u8, layout: Layout) {
+    todo!()
 }
