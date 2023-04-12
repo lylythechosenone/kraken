@@ -96,11 +96,17 @@ impl<T: Serial + Send> Log for SerialLogger<T> {
                 writeln!(writer, "[INFO] ({}) {}", record.target(), record.args()).unwrap();
             }
             log::Level::Debug => {
+                if cfg!(not(debug_assertions)) {
+                    return;
+                }
                 let mut serial = self.serial.lock();
                 let mut writer = SerialWriter::new(&mut serial);
                 writeln!(writer, "[DEBUG] ({}) {}", record.target(), record.args()).unwrap();
             }
             log::Level::Trace => {
+                if cfg!(not(debug_assertions)) {
+                    return;
+                }
                 let mut serial = self.serial.lock();
                 let mut writer = SerialWriter::new(&mut serial);
                 writeln!(writer, "[TRACE] ({}) {}", record.target(), record.args()).unwrap();
