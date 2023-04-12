@@ -1,8 +1,6 @@
-use core::{mem::MaybeUninit, ptr::NonNull};
+use core::{alloc::Layout, future::Future, mem::MaybeUninit, ptr::NonNull};
 
 use system::sync::Mutex;
-
-use crate::slab::{Heap, Slab};
 
 use self::{
     segment_list::SegmentList,
@@ -46,20 +44,25 @@ pub struct Vmem<'src> {
     inner: Mutex<VmemInner<'src>>,
 }
 impl<'src> Vmem<'src> {
-    pub fn new(slab: Slab<Heap<Bt>, 16, 4>, quantum: usize) -> Self {
+    pub fn new(quantum: usize) -> Self {
         Self {
-            inner: Mutex::new(VmemInner::new(slab, quantum)),
+            inner: Mutex::new(VmemInner::new(quantum)),
         }
     }
 
     pub async fn add_span(&self, base: usize, len: usize) -> &Vmem<'src> {
         let mut inner = self.inner.lock().await;
-        inner.add_span(base, len).await;
+        inner.add_span(base, len);
         self
     }
+    pub async fn add_span_ptrs(&self, base: usize, len: usize, ptrs: [NonNull<Bt>; 2]) {
+        let mut inner = self.inner.lock().await;
+        inner.add_span_ptrs(base, len, ptrs);
+    }
+
     pub async fn borrow_span(&self, base: usize, len: usize) -> &Vmem<'src> {
         let mut inner = self.inner.lock().await;
-        inner.borrow_span(base, len).await;
+        inner.borrow_span(base, len);
         self
     }
 
@@ -71,12 +74,20 @@ impl<'src> Vmem<'src> {
 
     pub async fn alloc(&self, len: usize, policy: AllocPolicy) -> Option<usize> {
         let mut inner = self.inner.lock().await;
-        inner.alloc(policy, len).await
+        inner.alloc(policy, len)
     }
 
     pub async fn free(&self, base: usize) {
         let mut inner = self.inner.lock().await;
         inner.free(base).await;
+    }
+    pub async fn free_func<Fn, Fut>(&self, base: usize, free: Fn)
+    where
+        Fn: FnMut(NonNull<Bt>) -> Fut,
+        Fut: Future<Output = ()>,
+    {
+        let mut inner = self.inner.lock().await;
+        inner.free_func(base, free).await;
     }
 }
 
@@ -84,25 +95,35 @@ struct VmemInner<'src> {
     segment_list: SegmentList,
     allocation_table: AllocationTable,
     freelists: Freelists,
-    slab: Slab<Heap<Bt>, 16, 4>,
     quantum: usize,
     parent: Option<&'src Vmem<'src>>,
     last: Option<NonNull<Bt>>,
 }
 impl<'src> VmemInner<'src> {
-    pub fn new(slab: Slab<Heap<Bt>, 16, 4>, quantum: usize) -> Self {
+    pub fn new(quantum: usize) -> Self {
         Self {
             segment_list: SegmentList::new(),
             allocation_table: AllocationTable::new(),
             freelists: Freelists::new(),
-            slab,
             quantum,
             parent: None,
             last: None,
         }
     }
-    pub async fn add_span(&mut self, base: usize, len: usize) {
-        let span = self.slab.alloc_or_restock().await.unwrap();
+
+    fn alloc_bt() -> NonNull<Bt> {
+        unsafe { NonNull::new_unchecked(alloc::alloc::alloc(Layout::new::<Bt>()) as *mut Bt) }
+    }
+
+    pub fn add_span(&mut self, base: usize, len: usize) {
+        self.add_span_ptrs(base, len, [Self::alloc_bt(), Self::alloc_bt()])
+    }
+    pub fn add_span_ptrs(
+        &mut self,
+        base: usize,
+        len: usize,
+        [span, initial_segment]: [NonNull<Bt>; 2],
+    ) {
         unsafe {
             *span.as_ptr() = Bt {
                 kind: BtKind::Span,
@@ -115,7 +136,6 @@ impl<'src> VmemInner<'src> {
                 segment_queue: MaybeUninit::uninit(),
             };
         }
-        let initial_segment = self.slab.alloc_or_restock().await.unwrap();
         unsafe {
             *initial_segment.as_ptr() = Bt {
                 kind: BtKind::Free,
@@ -136,11 +156,13 @@ impl<'src> VmemInner<'src> {
         self.freelists.insert(initial_segment, self.quantum);
     }
 
-    pub async fn borrow_span(&mut self, base: usize, len: usize) {
+    pub fn borrow_span(&mut self, base: usize, len: usize) {
+        self.borrow_span_ptr(base, len, Self::alloc_bt())
+    }
+    pub fn borrow_span_ptr(&mut self, base: usize, len: usize, span: NonNull<Bt>) {
         if self.parent.is_none() {
             panic!("Attempting to borrow span from vmem with no parent");
         }
-        let span = self.slab.alloc_or_restock().await.unwrap();
         unsafe {
             *span.as_ptr() = Bt {
                 kind: BtKind::ImportedSpan,
@@ -163,7 +185,15 @@ impl<'src> VmemInner<'src> {
         self.parent = Some(parent);
     }
 
-    pub async fn alloc(&mut self, policy: AllocPolicy, size: usize) -> Option<usize> {
+    pub fn alloc(&mut self, policy: AllocPolicy, size: usize) -> Option<usize> {
+        self.alloc_ptr(policy, size, Self::alloc_bt())
+    }
+    pub fn alloc_ptr(
+        &mut self,
+        policy: AllocPolicy,
+        size: usize,
+        new_tag: NonNull<Bt>,
+    ) -> Option<usize> {
         let mut tag = match policy {
             AllocPolicy::InstantFit => self.freelists.instant_fit(size, self.quantum)?,
             AllocPolicy::BestFit => self.freelists.best_fit(size, self.quantum)?,
@@ -189,7 +219,6 @@ impl<'src> VmemInner<'src> {
         let base = tag_mut.base;
         tag_mut.base += size;
         tag_mut.len -= size;
-        let new_tag = self.slab.alloc_or_restock().await.unwrap();
         unsafe {
             *new_tag.as_ptr() = Bt {
                 kind: BtKind::Used,
@@ -212,6 +241,19 @@ impl<'src> VmemInner<'src> {
     }
 
     pub async fn free(&mut self, base: usize) {
+        self.free_func(base, |tag| async move {
+            unsafe {
+                tag.as_ptr().drop_in_place();
+                alloc::alloc::dealloc(tag.as_ptr() as *mut u8, Layout::new::<Bt>());
+            }
+        })
+        .await;
+    }
+    pub async fn free_func<Fn, Fut>(&mut self, base: usize, mut free: Fn)
+    where
+        Fn: FnMut(NonNull<Bt>) -> Fut,
+        Fut: core::future::Future,
+    {
         let mut tag = self.allocation_table.get(base).unwrap();
         let tag_mut = unsafe { tag.as_mut() };
         tag_mut.kind = BtKind::Free;
@@ -224,7 +266,7 @@ impl<'src> VmemInner<'src> {
             tag_mut.len += new_tag_ref.len;
             self.segment_list.remove(tag);
             self.freelists.remove(tag, self.quantum);
-            self.slab.free(tag).await;
+            free(tag).await;
         }
         for new_tag in self.segment_list.iter_from(tag).rev().skip(1) {
             let new_tag_ref = unsafe { new_tag.as_ref() };
@@ -235,7 +277,7 @@ impl<'src> VmemInner<'src> {
             tag_mut.len += new_tag_ref.len;
             self.segment_list.remove(tag);
             self.freelists.remove(tag, self.quantum);
-            self.slab.free(tag).await;
+            free(tag).await;
         }
         self.freelists.insert(tag, self.quantum);
     }
