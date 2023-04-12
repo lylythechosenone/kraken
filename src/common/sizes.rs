@@ -5,7 +5,9 @@ use log::info;
 pub struct Size(pub usize);
 impl Display for Size {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        if self.0 % 1024usize.pow(6) == 0 {
+        if self.0 == 0 {
+            write!(f, "0B")
+        } else if self.0 % 1024usize.pow(6) == 0 {
             write!(f, "{}EiB", self.0 / 1024usize.pow(6))
         } else if self.0 % 1024usize.pow(5) == 0 {
             write!(f, "{}PiB", self.0 / 1024usize.pow(5))

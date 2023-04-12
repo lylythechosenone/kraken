@@ -12,5 +12,6 @@
     "relocation-model": "pie",
     "target-pointer-width": "64",
     "position-independent-executables": true,
-    "static-position-independent-executables": true
+    "static-position-independent-executables": true,
+    "code-model": "small"
 }

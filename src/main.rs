@@ -1,9 +1,9 @@
 #![no_std]
 #![no_main]
-#![feature(panic_info_message, once_cell)]
+#![feature(panic_info_message, never_type)]
 #![allow(unused)]
 
-use core::alloc::Layout;
+use core::{alloc::Layout, fmt::Write};
 
 use log::{error, info};
 

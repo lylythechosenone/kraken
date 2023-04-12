@@ -1,3 +1,8 @@
+.macro adrl rd, symbol
+    adrp \rd, \symbol
+    add  \rd, \rd, :lo12:\symbol
+.endm
+
 .pushsection .hdr,"ax",@progbits
 bl init_asm
 nop
@@ -11,13 +16,13 @@ nop
 .4byte 0
 
 init_asm:
-    adr x3, stack
+    adrl x3, stack
     mov sp, x3
     mov x19, x0
 
     mov x0, #0
-    adr x1, bss_start
-    adr x2, bss_end
+    adrl x1, bss_start
+    adrl x2, bss_end
 .loop:
     str x0, [x1]
     add x1, x1, #8
@@ -25,7 +30,7 @@ init_asm:
     b.lt .loop
 
     sub x0, x30, #4 /* get the base address */
-    adr x1, _DYNAMIC
+    adrl x1, _DYNAMIC
     bl relocate
 
     mov x0, x19

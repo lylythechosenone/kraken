@@ -42,7 +42,7 @@ SECTIONS
         bss_start = .;
         *(.bss*)
         stack_bottom = .;
-        . += 0x1000;
+        INCLUDE stack_size.ld
         . = ALIGN(16);
         stack = .;
         bss_end = .;

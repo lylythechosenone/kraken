@@ -16,9 +16,12 @@ mem = { path = "libs/mem", default-features = false }
 system = { path = "libs/system", default-features = false }
 smallvec = { version = "1.10.0", features = ["const_generics"] }
 bitflags = "2.1.0"
+heapless = "0.7.16"
 
 [profile.dev]
 panic = "abort"
+opt-level = 1
 
 [profile.release]
 panic = "abort"
+opt-level = 3

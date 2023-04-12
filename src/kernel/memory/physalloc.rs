@@ -8,6 +8,7 @@ use crate::{
 
 use super::address::{PhysAddr, Pointer, Virtual};
 
+#[derive(Debug)]
 pub struct Node {
     pub next: Option<NonNull<Node>>,
 }
