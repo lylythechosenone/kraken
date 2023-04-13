@@ -4,7 +4,11 @@
     ],
     "rust-analyzer.check.allTargets": false,
     "conventionalCommits.scopes": [
-        "arm"
+        "arm",
+        "libmem",
+        "libsystem",
+        "kernel",
+        "settings",
     ],
     "rust-analyzer.check.command": "clippy"
 }
