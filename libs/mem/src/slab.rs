@@ -78,4 +78,23 @@ impl<A: Alloc, const N: usize> Slab<A, N> {
             self.alloc()
         }
     }
+
+    pub async fn alloc_shortcircuiting(&self) -> Option<A::Item> {
+        if let Some(item) = self.alloc() {
+            Some(item)
+        } else {
+            self.alloc.lock().await.alloc().await
+        }
+    }
+
+    pub async fn lock_alloc(&self) -> Lock<'_, A> {
+        self.alloc.lock().await
+    }
+
+    fn get_slabs(&self) -> &Vec<heapless::Vec<A::Item, N>> {
+        unsafe { &*self.slabs.get() }
+    }
+    fn get_slabs_mut(&self) -> &mut Vec<heapless::Vec<A::Item, N>> {
+        unsafe { &mut *self.slabs.get() }
+    }
 }

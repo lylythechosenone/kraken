@@ -14,18 +14,21 @@ mod sealed {
     }
 }
 
+#[derive(Copy, Clone)]
 pub struct Size4K;
 impl PageSize for Size4K {
     fn size() -> usize {
         4096
     }
 }
+#[derive(Copy, Clone)]
 pub struct Size2M;
 impl PageSize for Size2M {
     fn size() -> usize {
         2 * 1024 * 1024
     }
 }
+#[derive(Copy, Clone)]
 pub struct Size1G;
 impl PageSize for Size1G {
     fn size() -> usize {
@@ -39,6 +42,7 @@ pub enum RuntimePageSize {
     Size1G,
 }
 
+#[derive(Copy, Clone)]
 pub struct PhysPage<Size: PageSize> {
     addr: PhysAddr,
     _phantom: PhantomData<Size>,

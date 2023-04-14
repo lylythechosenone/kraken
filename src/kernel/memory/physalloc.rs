@@ -1,5 +1,8 @@
 use core::{fmt::Debug, ptr::NonNull};
 
+use mem::slab::{Alloc, Slab};
+use system::sync::Mutex;
+
 use crate::{
     arch::paging::{PhysPage, Size4K},
     common::sizes::Size,
@@ -14,10 +17,49 @@ pub struct Node {
 }
 
 pub struct PhysAlloc {
+    slab: Slab<PhysAllocInner, 128>,
+}
+impl PhysAlloc {
+    pub fn new(inner: PhysAllocInner) -> Self {
+        Self {
+            slab: Slab::new(inner),
+        }
+    }
+
+    pub async fn alloc(&self) -> Option<PhysPage<Size4K>> {
+        self.slab.alloc_shortcircuiting().await
+    }
+
+    pub async fn free(&self, page: PhysPage<Size4K>) {
+        self.slab.free(page).await
+    }
+
+    pub async fn clean_dirty(&self) -> bool {
+        let mut inner = self.slab.lock_alloc().await;
+        inner.clean_dirty()
+    }
+
+    pub async fn restock_slab(&self) -> bool {
+        self.slab.restock().await
+    }
+}
+
+pub struct PhysAllocInner {
     pub free: Option<NonNull<Node>>,
     pub dirty: Option<NonNull<Node>>,
 }
-impl PhysAlloc {
+impl Alloc for PhysAllocInner {
+    type Item = PhysPage<Size4K>;
+
+    async fn alloc(&mut self) -> Option<Self::Item> {
+        self.alloc()
+    }
+
+    async fn free(&mut self, item: Self::Item) {
+        self.free(item)
+    }
+}
+impl PhysAllocInner {
     pub fn alloc(&mut self) -> Option<PhysPage<Size4K>> {
         let mut node = if let Some(free) = self.free {
             free
@@ -64,7 +106,7 @@ impl PhysAlloc {
         self.dirty.is_some()
     }
 }
-impl Debug for PhysAlloc {
+impl Debug for PhysAllocInner {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let mut node = self.free;
         let mut free_count = 0;

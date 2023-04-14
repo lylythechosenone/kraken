@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
-#![feature(panic_info_message, never_type)]
-#![allow(unused)]
+#![feature(panic_info_message, never_type, async_fn_in_trait)]
+#![allow(unused, incomplete_features)]
 
 use core::{alloc::Layout, fmt::Write};
 

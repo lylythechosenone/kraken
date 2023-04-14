@@ -13,7 +13,7 @@ use crate::{
         pl011::{Config, Parity, Pl011},
         Serial, SerialLogger,
     },
-    kernel::memory::physalloc::{Node, PhysAlloc},
+    kernel::memory::physalloc::{Node, PhysAllocInner},
     label,
 };
 
@@ -252,7 +252,7 @@ pub unsafe extern "C" fn init(dtb_ptr: *const u8) -> ! {
     }
 
     let head = || NonNull::new(((ranges.ranges.first()?.start + 4095) / 4096 * 4096) as *mut Node);
-    let physalloc = PhysAlloc {
+    let physalloc = PhysAllocInner {
         free: head(),
         dirty: None,
     };
