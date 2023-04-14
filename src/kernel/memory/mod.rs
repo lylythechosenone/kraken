@@ -26,6 +26,6 @@ unsafe impl GlobalAlloc for DummyAlloc {
 }
 
 pub struct Kmem {
-    pub physalloc: &'static mut PhysAlloc,
-    pub vmem: &'static mut Vmem<'static>,
+    pub physalloc: PhysAlloc,
+    pub vmem: Vmem<'static>,
 }
