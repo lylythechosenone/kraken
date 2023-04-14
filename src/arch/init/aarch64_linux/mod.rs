@@ -13,10 +13,7 @@ use crate::{
         pl011::{Config, Parity, Pl011},
         Serial, SerialLogger,
     },
-    kernel::memory::{
-        physalloc::{Node, PhysAlloc},
-        Bitmap,
-    },
+    kernel::memory::physalloc::{Node, PhysAlloc},
     label,
 };
 
