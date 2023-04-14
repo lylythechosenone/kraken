@@ -43,6 +43,8 @@ pub enum AllocPolicy {
 pub struct Vmem<'src> {
     inner: Mutex<VmemInner<'src>>,
 }
+unsafe impl Send for Vmem<'_> {}
+unsafe impl Sync for Vmem<'_> {}
 impl<'src> Vmem<'src> {
     pub fn new(quantum: usize) -> Self {
         Self {
