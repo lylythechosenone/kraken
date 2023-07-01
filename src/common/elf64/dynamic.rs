@@ -1,6 +1,6 @@
 use crate::size_of;
 
-///! Dynamic linking information. See https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-42444.html for more info.
+/// Dynamic linking information. See https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-42444.html for more info.
 
 /// A dynamic entry, found in the `.dynamic` section, under the `_DYNAMIC` label.
 #[repr(C)]
