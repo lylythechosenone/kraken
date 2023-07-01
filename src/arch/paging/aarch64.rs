@@ -16,8 +16,22 @@ impl<Size: PageSize> super::CacheFlush for Flush<Size> {
         if let Some(page) = self.0 {
             unsafe {
                 asm!(
-                    "dsb st",
+                    "dsb sy",
                     "tlbi vae1, {}",
+                    "dsb sy", "isb",
+                    in(reg) page.addr.get() as usize / Size::size(),
+                    options(nostack)
+                );
+            }
+        }
+    }
+
+    fn flush_all(self) {
+        if let Some(page) = self.0 {
+            unsafe {
+                asm!(
+                    "dsb sy",
+                    "tlbi vmalle1is, {}",
                     "dsb sy", "isb",
                     in(reg) page.addr.get() as usize / Size::size(),
                     options(nostack)

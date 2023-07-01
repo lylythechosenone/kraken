@@ -110,6 +110,7 @@ pub trait Mapper<Size: PageSize> {
 
 pub trait CacheFlush: Sized {
     fn flush(self);
+    fn flush_all(self);
     // instant drop
     fn ignore(self) {}
 }
