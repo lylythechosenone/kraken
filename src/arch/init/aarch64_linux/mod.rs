@@ -13,7 +13,10 @@ use crate::{
         pl011::{Config, Parity, Pl011},
         Serial, SerialLogger,
     },
-    kernel::memory::physalloc::{Node, PhysAllocInner},
+    kernel::memory::{
+        physalloc::{Node, PhysAlloc, PhysAllocInner},
+        PHYS_ALLOC,
+    },
     label,
 };
 
@@ -258,6 +261,8 @@ pub unsafe extern "C" fn init(dtb_ptr: *const u8) -> ! {
     };
 
     trace!("Initialized physical allocator: {physalloc:?}");
+
+    PHYS_ALLOC.call_once(|| PhysAlloc::new(physalloc));
 
     crate::main();
 }

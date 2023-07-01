@@ -66,7 +66,7 @@ pub enum TranslateError {
 
 pub enum MapError {
     AlreadyMapped(RuntimePageSize),
-    NoBitmap,
+    NoPhysAlloc,
     OutOfMem,
 }
 
@@ -95,7 +95,7 @@ bitflags! {
 
 pub trait Mapper<Size: PageSize> {
     type Flush: CacheFlush;
-    fn map(
+    async fn map(
         &mut self,
         page: VirtPage<Size>,
         frame: PhysPage<Size>,

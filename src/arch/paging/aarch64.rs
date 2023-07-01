@@ -2,7 +2,7 @@ use core::arch::asm;
 
 use crate::kernel::memory::{
     address::{PhysAddr, PhysPtr},
-    BITMAP, HHDM_START,
+    HHDM_START, PHYS_ALLOC,
 };
 
 use super::{
@@ -32,30 +32,30 @@ pub struct PageTable {
     kernel_l0: [Table; 512],
 }
 impl PageTable {
-    fn alloc_tables(hhdm_start: usize) -> Result<PhysPtr<[Table; 512]>, MapError> {
-        let mut bitmap = BITMAP.lock();
-        let Some(bitmap) = bitmap.as_mut() else {
-            return Err(MapError::NoBitmap);
+    async fn alloc_tables(hhdm_start: usize) -> Result<PhysPtr<[Table; 512]>, MapError> {
+        let phys_alloc = PHYS_ALLOC.get();
+        let Some(phys_alloc) = phys_alloc else {
+            return Err(MapError::NoPhysAlloc)
         };
-        let Some(frame) = bitmap.alloc() else {
-            return Err(MapError::OutOfMem);
+        let Some(frame) = phys_alloc.alloc().await else {
+            return Err(MapError::OutOfMem)
         };
-        let ptr = frame.into_ptr();
+        let ptr = frame.addr.into_ptr();
         let virt = ptr.to_virt_offset(hhdm_start);
         unsafe {
             core::ptr::write(virt.get(), [Table::new(); 512]);
         }
         Ok(ptr)
     }
-    fn alloc_pages(hhdm_start: usize) -> Result<PhysPtr<[Page; 512]>, MapError> {
-        let mut bitmap = BITMAP.lock();
-        let Some(bitmap) = bitmap.as_mut() else {
-            return Err(MapError::NoBitmap);
+    async fn alloc_pages(hhdm_start: usize) -> Result<PhysPtr<[Page; 512]>, MapError> {
+        let phys_alloc = PHYS_ALLOC.get();
+        let Some(phys_alloc) = phys_alloc else {
+            return Err(MapError::NoPhysAlloc)
         };
-        let Some(frame) = bitmap.alloc() else {
-            return Err(MapError::OutOfMem);
+        let Some(frame) = phys_alloc.alloc().await else {
+            return Err(MapError::OutOfMem)
         };
-        let ptr = frame.into_ptr();
+        let ptr = frame.addr.into_ptr();
         let virt = ptr.to_virt_offset(hhdm_start);
         unsafe {
             core::ptr::write(virt.get(), [Page::new(); 512]);
@@ -66,7 +66,7 @@ impl PageTable {
 impl Mapper<Size4K> for PageTable {
     type Flush = Flush<Size4K>;
 
-    fn map(
+    async fn map(
         &mut self,
         page: VirtPage<Size4K>,
         frame: PhysPage<Size4K>,
@@ -82,7 +82,7 @@ impl Mapper<Size4K> for PageTable {
         };
         let mut l0_desc = &mut l0[virt_ptr >> 39 & 0x1ff];
         if !l0_desc.is_present() {
-            l0_desc.set_ptr(Self::alloc_tables(hhdm_start)?.cast());
+            l0_desc.set_ptr(Self::alloc_tables(hhdm_start).await?.cast());
             l0_desc.set_present(true);
         }
 
@@ -94,7 +94,7 @@ impl Mapper<Size4K> for PageTable {
         }
         let mut l1_desc = unsafe { &mut l1_desc.table };
         if !l1_desc.is_present() {
-            l1_desc.set_ptr(Self::alloc_tables(hhdm_start)?.cast());
+            l1_desc.set_ptr(Self::alloc_tables(hhdm_start).await?.cast());
             l1_desc.set_present(true);
         }
 
@@ -106,7 +106,7 @@ impl Mapper<Size4K> for PageTable {
         }
         let l2_desc = unsafe { &mut l2_desc.table };
         if !l2_desc.is_present() {
-            l2_desc.set_ptr(Self::alloc_tables(hhdm_start)?.cast());
+            l2_desc.set_ptr(Self::alloc_tables(hhdm_start).await?.cast());
             l2_desc.set_present(true);
         }
 
@@ -230,7 +230,7 @@ impl Mapper<Size4K> for PageTable {
 impl Mapper<Size2M> for PageTable {
     type Flush = Flush<Size2M>;
 
-    fn map(
+    async fn map(
         &mut self,
         page: VirtPage<Size2M>,
         frame: PhysPage<Size2M>,
@@ -246,7 +246,7 @@ impl Mapper<Size2M> for PageTable {
         };
         let mut l0_desc = &mut l0[virt_ptr >> 39 & 0x1ff];
         if !l0_desc.is_present() {
-            l0_desc.set_ptr(Self::alloc_tables(hhdm_start)?.cast());
+            l0_desc.set_ptr(Self::alloc_tables(hhdm_start).await?.cast());
             l0_desc.set_present(true);
         }
 
@@ -258,7 +258,7 @@ impl Mapper<Size2M> for PageTable {
         }
         let mut l1_desc = unsafe { &mut l1_desc.table };
         if !l1_desc.is_present() {
-            l1_desc.set_ptr(Self::alloc_tables(hhdm_start)?.cast());
+            l1_desc.set_ptr(Self::alloc_tables(hhdm_start).await?.cast());
             l1_desc.set_present(true);
         }
 
@@ -366,7 +366,7 @@ impl Mapper<Size2M> for PageTable {
 impl Mapper<Size1G> for PageTable {
     type Flush = Flush<Size1G>;
 
-    fn map(
+    async fn map(
         &mut self,
         page: VirtPage<Size1G>,
         frame: PhysPage<Size1G>,
@@ -382,7 +382,7 @@ impl Mapper<Size1G> for PageTable {
         };
         let mut l0_desc = &mut l0[virt_ptr >> 39 & 0x1ff];
         if !l0_desc.is_present() {
-            l0_desc.set_ptr(Self::alloc_tables(hhdm_start)?.cast());
+            l0_desc.set_ptr(Self::alloc_tables(hhdm_start).await?.cast());
             l0_desc.set_present(true);
         }
 

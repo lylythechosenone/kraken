@@ -10,6 +10,7 @@ pub mod address;
 pub mod physalloc;
 
 pub static HHDM_START: Once<usize> = Once::new();
+pub static PHYS_ALLOC: Once<PhysAlloc> = Once::new();
 
 #[global_allocator]
 pub static DUMMY_ALLOC: DummyAlloc = DummyAlloc;
