@@ -11,13 +11,13 @@ build_aarch64:
 ifeq ($(PROTO), linux)
 ifeq ($(DEBUG), 1)
 	echo ". += 0x2000000;" > stack_size.ld
-	cargo build --target src/arch/init/aarch64_linux/target.json --features linux -Z build-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem
+	cargo +nightly build --target src/arch/init/aarch64_linux/target.json --features linux -Z build-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem
 	cp target/target/debug/kraken ./kernel
 	$(OBJCOPY) -O binary kernel kernel.bin
 	rm -f stack_size.ld
 else
 	echo ". += 0x200000;" > stack_size.ld
-	cargo build --target src/arch/init/aarch64_linux/target.json --features linux -Z build-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem --release
+	cargo +nightly build --target src/arch/init/aarch64_linux/target.json --features linux -Z build-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem --release
 	cp target/target/release/kraken ./kernel
 	$(OBJCOPY) -O binary kernel kernel.bin
 	rm -f stack_size.ld
