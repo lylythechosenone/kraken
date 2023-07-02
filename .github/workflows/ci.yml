@@ -15,8 +15,10 @@ jobs:
       - uses: docker/setup-qemu-action@v2
         with:
           platforms: arm64
+      - name: "Installing binutils aarch64"
+        run: sudo apt update && sudo apt install binutils-aarch64-linux-gnu
       - name: "Building aarch64-linux"
-        run: env DEBUG=1 TARGET=aarch64 PROTO=linux make build
+        run: env DEBUG=1 TARGET=aarch64 PROTO=linux OBJCOPY=/usr/aarch64-linux-gnu/bin/objcopy make build
       - uses: actions/upload-artifact@v3
         with:
           name: "kernel-elf"
