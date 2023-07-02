@@ -54,16 +54,20 @@ pub fn main() -> ! {
     panic!("Got to the end of main");
 }
 
+#[no_mangle]
 pub fn num_cpus() -> usize {
     todo!()
 }
+#[no_mangle]
 pub fn cpu_id() -> usize {
     todo!()
 }
 
+#[no_mangle]
 pub fn alloc(layout: Layout) -> Option<*mut u8> {
     todo!()
 }
+#[no_mangle]
 pub fn free(ptr: *mut u8, layout: Layout) {
     todo!()
 }
