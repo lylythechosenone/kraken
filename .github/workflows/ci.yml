@@ -1,0 +1,24 @@
+on: [push]
+
+jobs:
+  build_and_verify:
+    name: "Build code"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+      - uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+      - name: "Building aarch64-linux"
+        run: env DEBUG=1 TARGET=aarch64 PROTO=linux make build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: "kernel-elf"
+          path: "kernel"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: "kernel-bin"
+          path: "kernel.bin"
