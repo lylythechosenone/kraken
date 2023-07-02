@@ -9,5 +9,5 @@ userspace = []
 
 [dependencies]
 pin-list = "0.1.0"
-pin-project = "1.0.12"
-spin = "0.9.5"
+pin-project = "1.1.0"
+spin = "0.9.8"

@@ -8,7 +8,7 @@ default = ["userspace"]
 userspace = ["system/userspace"]
 
 [dependencies]
-futures = { version = "0.3.26", default-features = false }
+futures = { version = "0.3.28", default-features = false }
 heapless = "0.7.16"
-nb = "1.0.0"
+nb = "1.1.0"
 system = { path = "../system", default-features = false }
