@@ -9,6 +9,9 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
+          target: aarch64-unknown-none-softfloat
+          default: true
+          components: rust-src
       - uses: docker/setup-qemu-action@v2
         with:
           platforms: arm64
